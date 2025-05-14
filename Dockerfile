@@ -26,9 +26,9 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
 # The versions must align and be in sync with the requirements_linux_docker.txt
 # hadolint ignore=SC2102
 RUN --mount=type=cache,id=pip-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/pip \
-    pip install -U --extra-index-url https://download.pytorch.org/whl/cu121 --extra-index-url https://pypi.nvidia.com \
-    torch==2.1.2 torchvision==0.16.2 \
-    xformers==0.0.23.post1 \
+    pip install -U --extra-index-url https://download.pytorch.org/whl/cu128 --extra-index-url https://pypi.nvidia.com \
+    torch==2.7.0 torchvision==0.22.0 \
+    xformers==0.0.30 \
     ninja \
     pip setuptools wheel
 
@@ -60,10 +60,10 @@ ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 
 WORKDIR /tmp
 
-ENV CUDA_VERSION=12.1.1
-ENV NV_CUDA_CUDART_VERSION=12.1.105-1
-ENV NVIDIA_REQUIRE_CUDA=cuda>=12.1
-ENV NV_CUDA_COMPAT_PACKAGE=cuda-compat-12-1
+ENV CUDA_VERSION=12.4.1
+ENV NV_CUDA_CUDART_VERSION=12.4.127-1
+ENV NVIDIA_REQUIRE_CUDA=cuda>=12.4
+ENV NV_CUDA_COMPAT_PACKAGE=cuda-compat-12-4
 
 # Install CUDA partially
 ADD https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64/cuda-keyring_1.0-1_all.deb .
@@ -77,14 +77,20 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     # Installing the whole CUDA typically increases the image size by approximately **8GB**.
     # To decrease the image size, we opt to install only the necessary libraries.
     # Here is the package list for your reference: https://developer.download.nvidia.com/compute/cuda/repos/debian11/x86_64
-    # !If you experience any related issues, replace the following line with `cuda-12-1` to obtain the complete CUDA package.
-    cuda-cudart-12-1=${NV_CUDA_CUDART_VERSION} ${NV_CUDA_COMPAT_PACKAGE} libcusparse-12-1 libnvjitlink-12-1
+    # !If you experience any related issues, replace the following line with `cuda-12-4` to obtain the complete CUDA package.
+    cuda-cudart-12-4=${NV_CUDA_CUDART_VERSION} ${NV_CUDA_COMPAT_PACKAGE} libcusparse-12-4 libnvjitlink-12-4 cuda-nvcc-12-4
 
 # Install runtime dependencies
+ARG UID
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
     --mount=type=cache,id=aptlists-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/lib/apt/lists \
     apt-get update && \
-    apt-get install -y --no-install-recommends libgl1 libglib2.0-0 libjpeg62 libtcl8.6 libtk8.6 libgoogle-perftools-dev dumb-init
+    apt-get install -y --no-install-recommends libgl1 libglib2.0-0 libjpeg62 libtcl8.6 libtk8.6 libgoogle-perftools-dev dumb-init git vim sudo curl wget \
+    echo $UID ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$UID && \
+    chmod 0440 /etc/sudoers.d/$UID && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    rm -rf /var/lib/apt/lists/*
 
 # Fix missing libnvinfer7
 RUN ln -s /usr/lib/x86_64-linux-gnu/libnvinfer.so /usr/lib/x86_64-linux-gnu/libnvinfer.so.7 && \
@@ -108,7 +114,7 @@ COPY --link --chown=$UID:0 --chmod=775 --from=build /root/.local /home/$UID/.loc
 COPY --link --chown=$UID:0 --chmod=775 . /app
 
 ENV PATH="/usr/local/cuda/lib:/usr/local/cuda/lib64:/home/$UID/.local/bin:$PATH"
-ENV PYTHONPATH="${PYTHONPATH}:/home/$UID/.local/lib/python3.10/site-packages" 
+ENV PYTHONPATH="${PYTHONPATH}:/home/$UID/.local/lib/python3.10/site-packages"
 ENV LD_LIBRARY_PATH="/usr/local/cuda/lib:/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
 ENV LD_PRELOAD=libtcmalloc.so
 ENV PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
@@ -126,11 +132,21 @@ EXPOSE 7860
 
 USER $UID
 
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.1/zsh-in-docker.sh)" -- \
+    -a 'CASE_SENSITIVE="true"' \
+    -t https://github.com/denysdovhan/spaceship-prompt \
+    -a 'SPACESHIP_PROMPT_ADD_NEWLINE="false"' \
+    -a 'SPACESHIP_PROMPT_SEPARATE_LINE="false"' \
+    -p git \
+    -p ssh-agent \
+    -p https://github.com/zsh-users/zsh-autosuggestions \
+    -p https://github.com/zsh-users/zsh-completions
+
 STOPSIGNAL SIGINT
 
 # Use dumb-init as PID 1 to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
-CMD ["python3", "kohya_gui.py", "--listen", "0.0.0.0", "--server_port", "7860", "--headless"]
+CMD python3 kohya_gui.py --listen 0.0.0.0 --server_port 7860 --headless $CLI_ARGS
 
 ARG VERSION
 ARG RELEASE

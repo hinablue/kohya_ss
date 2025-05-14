@@ -49,7 +49,7 @@ class BasicTraining:
         self.finetuning = finetuning
         self.dreambooth = dreambooth
         self.config = config
-        
+
         # Initialize old_lr_warmup and old_lr_warmup_steps with default values
         self.old_lr_warmup = 0
         self.old_lr_warmup_steps = 0
@@ -175,7 +175,7 @@ class BasicTraining:
                 ],
                 value=self.config.get("basic.lr_scheduler", self.lr_scheduler_value),
             )
-            
+
             # Initialize the learning rate scheduler type dropdown
             self.lr_scheduler_type = gr.Dropdown(
                 label="LR Scheduler type",
@@ -187,7 +187,7 @@ class BasicTraining:
                 value=self.config.get("basic.lr_scheduler_type", ""),
                 allow_custom_value=True,
             )
-            
+
             # Initialize the optimizer dropdown
             self.optimizer = gr.Dropdown(
                 label="Optimizer",
@@ -196,6 +196,8 @@ class BasicTraining:
                     "AdamWScheduleFree",
                     "AdamW8bit",
                     "Adafactor",
+                    "Automagic_CameAMP",
+                    "Automagic_CameAMP8bit",
                     "bitsandbytes.optim.AdEMAMix8bit",
                     "bitsandbytes.optim.PagedAdEMAMix8bit",
                     "DAdaptation",
@@ -318,7 +320,7 @@ class BasicTraining:
                 minimum=0,
                 step=1,
             )
-            
+
             def lr_scheduler_changed(scheduler, value, value_lr_warmup_steps):
                 if scheduler == "constant":
                     self.old_lr_warmup = value
@@ -337,7 +339,7 @@ class BasicTraining:
                     interactive=True
                     info=""
                 return gr.Slider(value=value, interactive=interactive, info=info), gr.Number(value=value_lr_warmup_steps, interactive=interactive, info=info)
-            
+
             self.lr_scheduler.change(
                 lr_scheduler_changed,
                 inputs=[self.lr_scheduler, self.lr_warmup, self.lr_warmup_steps],
