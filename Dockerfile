@@ -85,7 +85,7 @@ ARG UID
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
     --mount=type=cache,id=aptlists-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/lib/apt/lists \
     apt-get update && \
-    apt-get install -y --no-install-recommends libgl1 libglib2.0-0 libjpeg62 libtcl8.6 libtk8.6 libgoogle-perftools-dev dumb-init git vim sudo curl wget \
+    apt-get install -y --no-install-recommends libgl1 libglib2.0-0 libjpeg62 libtcl8.6 libtk8.6 libgoogle-perftools-dev dumb-init git vim sudo curl wget && \
     echo $UID ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$UID && \
     chmod 0440 /etc/sudoers.d/$UID && \
     apt-get autoremove -y && \
