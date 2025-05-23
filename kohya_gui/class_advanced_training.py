@@ -146,7 +146,7 @@ class AdvancedTraining:
             with gr.Row():
                 self.loss_type = gr.Dropdown(
                     label="Loss type",
-                    choices=["huber", "smooth_l1", "l1", "l2"],
+                    choices=["huber", "smooth_l1", "l1", "l2", "stable_max"],
                     value=self.config.get("advanced.loss_type", "l2"),
                     info="The type of loss to use and whether it's scheduled based on the timestep",
                 )
@@ -278,7 +278,7 @@ class AdvancedTraining:
                 inputs=[self.full_fp16, self.full_bf16],
                 outputs=[self.full_fp16, self.full_bf16],
             )
-            
+
         with gr.Row():
             self.highvram = gr.Checkbox(
                 label="highvram",

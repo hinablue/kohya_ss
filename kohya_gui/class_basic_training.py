@@ -200,6 +200,7 @@ class BasicTraining:
                     "Automagic_CameAMP8bit",
                     "bitsandbytes.optim.AdEMAMix8bit",
                     "bitsandbytes.optim.PagedAdEMAMix8bit",
+                    "CAME",
                     "DAdaptation",
                     "DAdaptAdaGrad",
                     "DAdaptAdam",
