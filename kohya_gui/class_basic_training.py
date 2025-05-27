@@ -198,6 +198,8 @@ class BasicTraining:
                     "Adafactor",
                     "Automagic_CameAMP",
                     "Automagic_CameAMP8bit",
+                    "Automagic_CameAMP_COptim",
+                    "Automagic_CameAMP_COptim8bit",
                     "bitsandbytes.optim.AdEMAMix8bit",
                     "bitsandbytes.optim.PagedAdEMAMix8bit",
                     "CAME",
