@@ -1,4 +1,0 @@
-[submodule "sd-scripts"]
-    path = sd-scripts
-    url = https://github.com/hinablue/sd-scripts.git
-    branch = sd3-hina

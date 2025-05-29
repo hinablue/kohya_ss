@@ -1,4 +1,4 @@
-accelerate==0.33.0
+accelerate>=1.7.0
 aiofiles==23.2.1
 altair==4.2.2
 dadaptation==3.2
@@ -12,7 +12,7 @@ huggingface-hub==0.29.3
 imagesize==1.4.1
 invisible-watermark==0.2.0
 lion-pytorch==0.0.6
-lycoris_lora==3.1.0
+lycoris_lora==3.2.0.post2
 omegaconf==2.3.0
 onnx==1.16.1
 prodigyopt==1.1.2
@@ -29,7 +29,7 @@ schedulefree==1.4
 scipy==1.11.4
 # for T5XXL tokenizer (SD3/FLUX)
 sentencepiece==0.2.0
-timm==0.6.12
+timm==0.6.7
 tk==0.1.0
 toml==0.10.2
 transformers==4.44.2
