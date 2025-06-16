@@ -212,6 +212,7 @@ class BasicTraining:
                     "DAdaptLion",
                     "DAdaptSGD",
                     "HinaAdamWOptimizer8bit",
+                    "HinaAdaptiveAdamWBF16",
                     "HinaAdaptiveAdamW8bit",
                     "Lion",
                     "Lion8bit",
