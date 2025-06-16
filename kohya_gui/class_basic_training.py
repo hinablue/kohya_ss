@@ -199,6 +199,7 @@ class BasicTraining:
                     "Automagic_CameAMP",
                     "Automagic_CameAMP8bit",
                     "Automagic_CameAMP_Improved",
+                    "Automagic_Sinkgd",
                     "Automagic_AdamS",
                     "bitsandbytes.optim.AdEMAMix8bit",
                     "bitsandbytes.optim.PagedAdEMAMix8bit",
