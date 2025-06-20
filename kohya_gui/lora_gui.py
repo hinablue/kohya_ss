@@ -1768,7 +1768,7 @@ def train_model(
     config_toml_data = {
         key: value
         for key, value in config_toml_data.items()
-        if value not in ["", False, None]
+        if not any([value == "", value is False, value is None])
     }
 
     config_toml_data["max_data_loader_n_workers"] = int(max_data_loader_n_workers)
@@ -2216,7 +2216,7 @@ def lora_tab(
                         inputs=[train_lora_ggpo],
                         outputs=[ggpo_row],
                     )
-                
+
                 # Update the visibility of the train lora ggpo row based on the model type being Flux.1
                 source_model.flux1_checkbox.change(
                     lambda flux1_checkbox: gr.Row(visible=flux1_checkbox),
@@ -2747,7 +2747,7 @@ def lora_tab(
                 "HuggingFace", open=False, elem_classes="huggingface_background"
             ):
                 huggingface = HuggingFace(config=config)
-            
+
             LoRA_type.change(
                 update_LoRA_settings,
                 inputs=[

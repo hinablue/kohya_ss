@@ -517,13 +517,13 @@ def train_model(
     # Get list of function parameters and values
     parameters = list(locals().items())
     global train_state_value
-    
+
     TRAIN_BUTTON_VISIBLE = [
         gr.Button(visible=True),
         gr.Button(visible=False or headless),
         gr.Textbox(value=train_state_value),
     ]
-    
+
     if executor.is_running():
         log.error("Training is already running. Can't start another training session.")
         return TRAIN_BUTTON_VISIBLE
@@ -533,42 +533,42 @@ def train_model(
     log.info(f"Validating lr scheduler arguments...")
     if not validate_args_setting(lr_scheduler_args):
         return
-    
+
     log.info(f"Validating optimizer arguments...")
     if not validate_args_setting(optimizer_args):
         return
 
     #
     # Validate paths
-    # 
-    
+    #
+
     if not validate_file_path(dataset_config):
         return TRAIN_BUTTON_VISIBLE
-    
+
     if not validate_file_path(log_tracker_config):
         return TRAIN_BUTTON_VISIBLE
-    
+
     if not validate_folder_path(logging_dir, can_be_written_to=True, create_if_not_exists=True):
         return TRAIN_BUTTON_VISIBLE
-    
+
     if not validate_folder_path(output_dir, can_be_written_to=True, create_if_not_exists=True):
         return TRAIN_BUTTON_VISIBLE
-    
+
     if not validate_model_path(pretrained_model_name_or_path):
         return TRAIN_BUTTON_VISIBLE
-    
+
     if not validate_folder_path(reg_data_dir):
         return TRAIN_BUTTON_VISIBLE
-    
+
     if not validate_folder_path(resume):
         return TRAIN_BUTTON_VISIBLE
-    
+
     if not validate_folder_path(train_data_dir):
         return TRAIN_BUTTON_VISIBLE
-    
+
     if not validate_model_path(vae):
         return TRAIN_BUTTON_VISIBLE
-    
+
     #
     # End of path validation
     #
@@ -891,18 +891,18 @@ def train_model(
     config_toml_data = {
         key: value
         for key, value in config_toml_data.items()
-        if value not in ["", False, None]
+        if not any([value == "", value is False, value is None])
     }
-    
+
     config_toml_data["max_data_loader_n_workers"] = int(max_data_loader_n_workers)
-    
+
     # Sort the dictionary by keys
     config_toml_data = dict(sorted(config_toml_data.items()))
 
     current_datetime = datetime.now()
     formatted_datetime = current_datetime.strftime("%Y%m%d-%H%M%S")
     tmpfilename = fr"{output_dir}/config_textual_inversion-{formatted_datetime}.toml"
-    
+
     # Save the updated TOML data back to the file
     with open(tmpfilename, "w", encoding="utf-8") as toml_file:
         toml.dump(config_toml_data, toml_file)
@@ -943,7 +943,7 @@ def train_model(
         # Run the command
 
         executor.execute_command(run_cmd=run_cmd, env=env)
-        
+
         train_state_value = time.time()
 
         return (
@@ -1125,7 +1125,7 @@ def ti_tab(
 
         global executor
         executor = CommandExecutor(headless=headless)
-        
+
         with gr.Column(), gr.Group():
             with gr.Row():
                 button_print = gr.Button("Print training command")
@@ -1284,9 +1284,9 @@ def ti_tab(
             outputs=[configuration.config_file_name],
             show_progress=False,
         )
-        
+
         run_state = gr.Textbox(value=train_state_value, visible=False)
-            
+
         run_state.change(
             fn=executor.wait_for_training_to_end,
             outputs=[executor.button_run, executor.button_stop_training],
