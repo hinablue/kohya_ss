@@ -286,9 +286,9 @@ class AdvancedTraining:
                 info="Disable low VRAM optimization. e.g. do not clear CUDA cache after each latent caching (for machines which have bigger VRAM)",
                 interactive=True,
             )
-            self.lowvram = gr.Checkbox(
-                label="lowvram",
-                value=self.config.get("advanced.lowvram", False),
+            self.lowram = gr.Checkbox(
+                label="lowram",
+                value=self.config.get("advanced.lowram", False),
                 info="Enable low RAM optimization. e.g. load models to VRAM instead of RAM (for machines which have bigger VRAM than RAM such as Colab and Kaggle)",
                 interactive=True,
             )

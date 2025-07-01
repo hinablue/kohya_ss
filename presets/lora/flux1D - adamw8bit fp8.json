@@ -72,7 +72,7 @@
   "loraplus_text_encoder_lr_ratio": 0,
   "loraplus_unet_lr_ratio": 0,
   "loss_type": "l2",
-  "lowvram": false,
+  "lowram": false,
   "lr_scheduler": "constant",
   "lr_scheduler_args": "",
   "lr_scheduler_num_cycles": 1,
