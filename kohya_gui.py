@@ -34,6 +34,8 @@ def initialize_ui_interface(config, headless, use_shell, release_info, readme_co
     ui_interface = gr.Blocks(css=css, title=f"Kohya_ss GUI {release_info}", theme=gr.themes.Default())
     with ui_interface:
         # Create tabs for different functionalities
+        with gr.Tab("LoRA"):
+            lora_tab(headless=headless, config=config, use_shell_flag=use_shell)
         with gr.Tab("Dreambooth"):
             (
                 train_data_dir_input,
@@ -41,8 +43,6 @@ def initialize_ui_interface(config, headless, use_shell, release_info, readme_co
                 output_dir_input,
                 logging_dir_input,
             ) = dreambooth_tab(headless=headless, config=config, use_shell_flag=use_shell)
-        with gr.Tab("LoRA"):
-            lora_tab(headless=headless, config=config, use_shell_flag=use_shell)
         with gr.Tab("Textual Inversion"):
             ti_tab(headless=headless, config=config, use_shell_flag=use_shell)
         with gr.Tab("Finetuning"):
@@ -103,7 +103,7 @@ def UI(**kwargs):
         "root_path": kwargs.get("root_path", None),
         "debug": kwargs.get("debug", False),
     }
-  
+
     # This line filters out any key-value pairs from `launch_params` where the value is `None`, ensuring only valid parameters are passed to the `launch` function.
     launch_params = {k: v for k, v in launch_params.items() if v is not None}
 
@@ -146,10 +146,10 @@ if __name__ == "__main__":
     else:
         # Run the validation command to verify requirements
         validation_command = [PYTHON, os.path.join(project_dir, "setup", "validate_requirements.py")]
-        
+
         if args.requirements is not None:
             validation_command.append(f"--requirements={args.requirements}")
-            
+
         subprocess.run(validation_command, check=True)
 
     # Launch the UI with the provided arguments
