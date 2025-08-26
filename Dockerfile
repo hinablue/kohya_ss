@@ -182,14 +182,14 @@ CMD python3 kohya_gui.py --listen 0.0.0.0 --server_port 7860 --headless --noveri
 
 ARG VERSION
 ARG RELEASE
-LABEL name="bmaltais/kohya_ss" \
-    vendor="bmaltais" \
-    maintainer="bmaltais" \
+LABEL name="hinablue/kohya_ss" \
+    vendor="hinablue" \
+    maintainer="hinablue" \
     # Dockerfile source repository
-    url="https://github.com/bmaltais/kohya_ss" \
+    url="https://github.com/hinablue/kohya_ss" \
     version=${VERSION} \
     # This should be a number, incremented with each change
     release=${RELEASE} \
     io.k8s.display-name="kohya_ss" \
     summary="Kohya's GUI: This repository provides a Gradio GUI for Kohya's Stable Diffusion trainers(https://github.com/kohya-ss/sd-scripts)." \
-    description="The GUI allows you to set the training parameters and generate and run the required CLI commands to train the model. This is the docker image for Kohya's GUI. For more information about this tool, please visit the following website: https://github.com/bmaltais/kohya_ss."
+    description="The GUI allows you to set the training parameters and generate and run the required CLI commands to train the model. This is the docker image for Kohya's GUI. For more information about this tool, please visit the following website: https://github.com/hinablue/kohya_ss."
